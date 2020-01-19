@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="autofac" Version="4.9.3" />
+    <PackageReference Include="System.Reactive" Version="4.1.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kernel.Interface\Kernel.Interface.csproj" />
+  </ItemGroup>
+
+  <Target Name="IncludeService" BeforeTargets="BeforeBuild">
+    <Message Importance="high" Text="**Output Required Services MSBuild $(MSBuildProjectDirectory)\$(OutputPath)" />
+    <!-- Setting the output path result in a missing dependency so maybe a bug no time to figure it out so I copy the files from a known location-->
+    <!--<MSBuild Projects="..\StockPriceService\StockPriceService.csproj" RebaseOutputs="true" BuildInParallel="false" Targets="Rebuild" Properties="OutputPath=$(MSBuildProjectDirectory)\bin\lib">
+      <Output TaskParameter="TargetOutputs" ItemName="ServiceOutput" />
+    </MSBuild>-->
+  </Target>
+  <ItemGroup>
+    <Content Include="@(ServiceOutput)" />
+  </ItemGroup>
+  <ItemGroup>
+    <LibraryContent Include="$(MSBuildProjectDirectory)\..\StockPriceService\bin\$(Configuration)\netstandard2.0\*.dll" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <LibraryRootFolder>$([System.IO.Path]::GetDirectoryName(@(ServiceOutput)))</LibraryRootFolder>
+  </PropertyGroup>
+  
+  <Target Name="CopyLibrary" AfterTargets="IncludeService">
+    <Copy SourceFiles="@(LibraryContent)" DestinationFolder="$(OutputPath)" />
+  </Target>
+
+</Project>

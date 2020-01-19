@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kernel.Interface\Kernel.Interface.csproj" />
+  </ItemGroup>
+
+  <Target Name="IncludeService" BeforeTargets="BeforeBuild">
+    <Message Importance="high" Text="**Output Required Services MSBuild $(MSBuildProjectDirectory)\$(OutputPath)" />
+  </Target>
+  <ItemGroup>
+    <Content Include="@(ServiceOutput)" />
+  </ItemGroup>
+  <ItemGroup>
+    <LibraryContent Include="$(MSBuildProjectDirectory)\..\StockPriceService\bin\$(Configuration)\netstandard2.0\*.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.3" />
+    <PackageReference Include="System.Reactive" Version="4.1.6" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <LibraryRootFolder>$([System.IO.Path]::GetDirectoryName(@(ServiceOutput)))</LibraryRootFolder>
+  </PropertyGroup>
+
+  <Target Name="CopyLibrary" AfterTargets="IncludeService">
+    <Copy SourceFiles="@(LibraryContent)" DestinationFolder="$(OutputPath)" />
+  </Target>
+</Project>

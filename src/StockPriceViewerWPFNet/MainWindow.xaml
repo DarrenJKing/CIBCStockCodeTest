@@ -1,0 +1,29 @@
+﻿<Window x:Class="StockPriceViewerWPFNet.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodel="clr-namespace:StockPriceViewerWPFNet.ViewModel"
+        xmlns:local="clr-namespace:StockPriceViewerWPFNet"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        d:DataContext="{d:DesignInstance viewmodel:MainViewModel, IsDesignTimeCreatable=True}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <CheckBox IsChecked="{Binding Path=IsStock1SubScribed}" />
+            <TextBlock>Subscribe to Stock 1</TextBlock>
+            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsStock2SubScribed}" />
+            <TextBlock>Subscribe to Stock 2</TextBlock>
+            <Button Margin="20,0,0,0" Width="100" Height="30" Command="{Binding StartButton}" Visibility="Hidden">
+                Start
+            </Button>
+        </StackPanel>
+        <DockPanel Grid.Row="1">
+            <ListBox ItemsSource="{Binding Path=ItemHistory}" />
+        </DockPanel>
+    </Grid>
+</Window>
